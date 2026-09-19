@@ -3,14 +3,20 @@
  * Live Sales Popups | WhatsApp Voice Simulator | Interactive Calculators
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initLiveSalesToasts();
-  initObjectionSimulator();
-  initRevenueCalculator();
-  initCountdownTimer();
-  initStickyBuyBar();
-  initFaqAccordion();
-});
+function initApp() {
+  try { initCountdownTimer(); } catch (e) { console.error('Timer error:', e); }
+  try { initLiveSalesToasts(); } catch (e) { console.error('Toast error:', e); }
+  try { initObjectionSimulator(); } catch (e) { console.error('Simulator error:', e); }
+  try { initRevenueCalculator(); } catch (e) { console.error('Calculator error:', e); }
+  try { initStickyBuyBar(); } catch (e) { console.error('Sticky bar error:', e); }
+  try { initFaqAccordion(); } catch (e) { console.error('FAQ error:', e); }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 /* ==========================================================================
    1. LIVE SALES NOTIFICATION TOASTS (FOMO & SOCIAL VALIDATION TRIGGER)
@@ -198,40 +204,68 @@ function initRevenueCalculator() {
    5. TIMER REGRESSIVO PERSISTENTE (NÃO RESETA NO F5)
    ========================================================================== */
 function initCountdownTimer() {
-  const topTimer = document.getElementById('countdownTop');
-  const offerTimer = document.getElementById('countdownOffer');
-  const stickyTimer = document.getElementById('countdownSticky');
+  const STORAGE_KEY = 'vendedor_pro_timer_v5';
+  const DURATION_MS = (14 * 60 + 32) * 1000; // 14 min 32 seg
 
-  const STORAGE_KEY = 'vendedor_pro_offer_timer';
-  const NOW = Date.now();
-  let endTime = localStorage.getItem(STORAGE_KEY);
-
-  // Se não existir ou tiver expirado há muito tempo, agenda para 14 min a partir de agora
-  if (!endTime || NOW > (parseInt(endTime, 10) + 1800 * 1000)) {
-    endTime = NOW + (14 * 60 + 22) * 1000;
-    localStorage.setItem(STORAGE_KEY, endTime.toString());
-  } else {
-    endTime = parseInt(endTime, 10);
+  function getStoredEndTime() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const val = parseInt(stored, 10);
+        if (!isNaN(val) && val > Date.now()) {
+          return val;
+        }
+      }
+    } catch (e) {}
+    return null;
   }
 
-  function formatTime(sec) {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  function setStoredEndTime(time) {
+    try { localStorage.setItem(STORAGE_KEY, time.toString()); } catch (e) {}
+    try { sessionStorage.setItem(STORAGE_KEY, time.toString()); } catch (e) {}
   }
 
-  function update() {
-    const remainingMs = Math.max(0, endTime - Date.now());
-    const remainingSec = Math.floor(remainingMs / 1000);
-    const formatted = formatTime(remainingSec > 0 ? remainingSec : 0);
+  let endTime = getStoredEndTime();
+  const now = Date.now();
+
+  // Se não existir ou se já tiver expirado, inicia uma nova contagem
+  if (!endTime || now >= endTime) {
+    endTime = now + DURATION_MS;
+    setStoredEndTime(endTime);
+  }
+
+  function pad(num) {
+    return num.toString().padStart(2, '0');
+  }
+
+  function tick() {
+    let diff = endTime - Date.now();
+
+    // Se zerar, renova o ciclo suavemente para nunca travar congelado em 00:00
+    if (diff <= 0) {
+      endTime = Date.now() + DURATION_MS;
+      setStoredEndTime(endTime);
+      diff = DURATION_MS;
+    }
+
+    const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const formatted = `${pad(minutes)}:${pad(seconds)}`;
+
+    const topTimer = document.getElementById('countdownTop');
+    const offerTimer = document.getElementById('countdownOffer');
+    const stickyTimer = document.getElementById('countdownSticky');
 
     if (topTimer) topTimer.textContent = formatted;
     if (offerTimer) offerTimer.textContent = formatted;
     if (stickyTimer) stickyTimer.textContent = formatted;
   }
 
-  update();
-  setInterval(update, 1000);
+  // Executa imediatamente para atualizar os números na tela
+  tick();
+  // Atualiza a cada 1 segundo (1000ms)
+  setInterval(tick, 1000);
 }
 
 /* ==========================================================================
