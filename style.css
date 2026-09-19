@@ -1039,7 +1039,11 @@ h1, h2, h3, h4 {
   line-height: 1.6;
 }
 
-/* Responsive */
+/* ==========================================================================
+   MOBILE-FIRST & RESPONSIVE PERFECTION
+   Optimized specifically for Smartphones (360px - 480px) and Tablets
+   ========================================================================== */
+
 @media (max-width: 992px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -1064,32 +1068,441 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
+  /* Prevent horizontal wobble and scroll */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
   }
-  .hero-title {
-    font-size: 2.2rem;
+
+  .container {
+    padding: 0 16px !important;
   }
-  .sticky-buy-bar {
+
+  /* Flash Banner Mobile */
+  .flash-banner {
+    font-size: 0.74rem;
+    padding: 7px 10px;
     flex-direction: column;
-    gap: 8px;
-    padding: 10px 16px;
+    gap: 3px;
+    line-height: 1.3;
+    text-align: center;
   }
-  .sticky-product-info {
+
+  .flash-timer {
+    font-size: 0.82rem;
+    padding: 2px 8px;
+  }
+
+  /* Navbar Mobile */
+  .navbar {
+    padding: 10px 0;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .brand-logo .logo-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+
+  .brand-logo .logo-text {
+    font-size: 1.15rem;
+  }
+
+  .nav-cta-btn {
+    padding: 8px 14px !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+  }
+
+  /* Hero Section Mobile */
+  .hero {
+    padding: 28px 0 24px;
+    text-align: center;
+  }
+
+  .hero-urgency-pill {
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .hero-title {
+    font-size: 1.7rem !important;
+    line-height: 1.22;
+    margin-bottom: 14px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+
+  .social-proof-rating {
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    margin: 0 auto 20px;
+    flex-direction: column;
+    gap: 4px;
     width: 100%;
-    justify-content: space-between;
+    max-width: 310px;
   }
+
+  .rating-stars {
+    font-size: 1rem;
+  }
+
   .btn-fire-cta {
     width: 100%;
-    padding: 18px 20px;
-    font-size: 1.05rem;
+    padding: 16px 16px;
+    font-size: 0.98rem;
+    letter-spacing: 0.02em;
+    border-radius: 12px;
   }
-  .stack-totals-row {
+
+  .hero-micro-copy {
     flex-direction: column;
-    gap: 16px;
-    text-align: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    margin-top: 10px;
   }
-  .stack-final-price {
+
+  .hero-visual {
+    margin-top: 24px;
+  }
+
+  .mockup-container {
+    max-width: 270px;
+    transform: none !important;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 69, 0, 0.2);
+  }
+
+  .floating-savings-tag {
+    top: -10px;
+    right: -6px;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  /* Segments Bar Mobile */
+  .segments-bar {
+    padding: 16px 0;
+    margin-top: 20px;
+  }
+
+  .segments-scroll {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .segment-item {
+    font-size: 0.76rem;
+    padding: 5px 11px;
+  }
+
+  /* Pain Section Mobile ("O Ciclo da Humilhação") */
+  .pain-section {
+    padding: 45px 0;
+  }
+
+  .section-tag-pain {
+    font-size: 0.74rem;
+    padding: 3px 10px;
+  }
+
+  .pain-section h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.25;
+  }
+
+  .pain-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .pain-step-card {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
+
+  .pain-step-num {
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+
+  .pain-step-title {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+
+  .pain-step-desc {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  /* Interactive Simulator Mobile */
+  .sim-section {
+    padding: 45px 0;
+  }
+
+  .sim-section h2 {
+    font-size: 1.55rem !important;
+  }
+
+  .sim-box {
+    padding: 16px 12px;
+    border-radius: 16px;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .sim-controls-title {
+    font-size: 1.1rem;
+  }
+
+  .sim-btn-list {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .sim-btn {
+    padding: 11px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .sim-screen {
+    padding: 16px 12px;
+    border-radius: 12px;
+    min-height: auto;
+  }
+
+  .sim-client-bubble {
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    border-radius: 10px 10px 10px 0;
+    margin-bottom: 14px;
+  }
+
+  .sim-pro-bubble {
+    padding: 14px 12px;
+    border-radius: 12px 12px 0 12px;
+  }
+
+  .sim-script-quote {
+    font-size: 0.94rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .sim-strategy-box {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  /* Calculator Mobile */
+  .calc-card-enhanced {
+    padding: 18px 12px;
+    border-radius: 16px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .calc-contrast-box {
+    padding: 20px 14px;
+    border-radius: 12px;
+  }
+
+  .calc-lost-big {
+    font-size: 2.1rem;
+  }
+
+  .calc-recover-box {
+    padding: 12px;
+  }
+
+  .calc-recover-box strong {
+    font-size: 1.25rem;
+  }
+
+  .calc-micro-comparison {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+  }
+
+  /* Value Stack Mobile */
+  .value-stack-card {
+    padding: 28px 12px 18px;
+    border-radius: 18px;
+  }
+
+  .stack-badge-huge {
+    font-size: 0.72rem;
+    padding: 5px 14px;
+    top: -13px;
+    white-space: nowrap;
+  }
+
+  .stack-item-row {
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .stack-item-info {
+    gap: 10px;
+    width: 100%;
+  }
+
+  .stack-item-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .stack-item-title {
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
+  .stack-item-val {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    margin-top: -2px;
+  }
+
+  .stack-totals-row {
+    padding: 16px 12px;
+    flex-direction: column;
+    gap: 12px;
     text-align: center;
+    border-radius: 12px;
+  }
+
+  .stack-retail-price {
+    font-size: 0.9rem;
+  }
+
+  .stack-retail-price span {
+    font-size: 1.15rem;
+  }
+
+  .stack-price-huge {
+    font-size: 3.2rem;
+  }
+
+  .stack-price-huge span.currency {
+    font-size: 1.5rem;
+  }
+
+  .stack-installments {
+    font-size: 0.92rem;
+  }
+
+  /* Compact Mobile Sticky Buy Bar */
+  .sticky-buy-bar {
+    padding: 10px 14px;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    height: 64px;
+  }
+
+  .sticky-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sticky-product-info .logo-icon {
+    display: none !important;
+  }
+
+  .sticky-product-info > div > div:first-child {
+    font-size: 0.78rem !important;
+    color: #ffffff;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 155px;
+  }
+
+  .sticky-badge-desc {
+    font-size: 0.72rem !important;
+    line-height: 1.2;
+  }
+
+  .sticky-buy-bar .btn-fire-cta {
+    width: auto !important;
+    padding: 10px 16px !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+
+  /* Live Sales Toast Mobile */
+  .live-sales-toast {
+    bottom: 74px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    gap: 10px;
+  }
+
+  .toast-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .toast-content strong {
+    font-size: 0.8rem;
+  }
+
+  .toast-content span {
+    font-size: 0.72rem;
+  }
+
+  .toast-time {
+    font-size: 0.68rem;
+  }
+
+  /* FAQ Mobile */
+  .faq-question {
+    padding: 16px 14px;
+    font-size: 0.94rem;
+    gap: 10px;
+  }
+
+  .faq-answer {
+    padding: 0 14px;
+  }
+
+  .faq-item.active .faq-answer {
+    padding-bottom: 14px;
+  }
+
+  .faq-answer p {
+    font-size: 0.88rem;
   }
 }
+
