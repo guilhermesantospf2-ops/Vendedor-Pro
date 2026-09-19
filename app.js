@@ -5,7 +5,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initLiveSalesToasts();
-  initWhatsAppVoicePlayer();
   initObjectionSimulator();
   initRevenueCalculator();
   initCountdownTimer();
@@ -61,55 +60,6 @@ function initLiveSalesToasts() {
   }, 4000);
 }
 
-/* ==========================================================================
-   2. WHATSAPP VOICE NOTE INTERACTIVE SIMULATOR
-   ========================================================================== */
-function initWhatsAppVoicePlayer() {
-  const playBtn = document.getElementById('voicePlayBtn');
-  const waveBars = document.querySelectorAll('.wave-bar');
-  const timeLabel = document.getElementById('voiceTimeLabel');
-
-  if (!playBtn) return;
-
-  let isPlaying = false;
-  let currentSec = 0;
-  let intervalId = null;
-  const maxSec = 28;
-
-  playBtn.addEventListener('click', () => {
-    isPlaying = !isPlaying;
-
-    if (isPlaying) {
-      playBtn.textContent = '⏸';
-      waveBars.forEach(bar => bar.classList.add('playing'));
-
-      intervalId = setInterval(() => {
-        currentSec++;
-        const s = currentSec.toString().padStart(2, '0');
-        if (timeLabel) timeLabel.textContent = `0:${s}`;
-
-        if (currentSec >= maxSec) {
-          resetPlayer();
-        }
-      }, 1000);
-    } else {
-      pausePlayer();
-    }
-  });
-
-  function pausePlayer() {
-    isPlaying = false;
-    playBtn.textContent = '▶';
-    waveBars.forEach(bar => bar.classList.remove('playing'));
-    if (intervalId) clearInterval(intervalId);
-  }
-
-  function resetPlayer() {
-    pausePlayer();
-    currentSec = 0;
-    if (timeLabel) timeLabel.textContent = '0:28';
-  }
-}
 
 /* ==========================================================================
    3. SIMULADOR DE OBJEÇÕES DO MERCADO TÊXTIL
