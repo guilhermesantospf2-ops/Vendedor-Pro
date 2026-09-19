@@ -1,58 +1,158 @@
 /**
- * VENDEDOR PRO - Interactive Experience Scripts
- * 100+ Frases Prontas para Fechamento de Vendas de Uniformes
+ * VENDEDOR PRO - PERSUASIVE DIRECT RESPONSE ENGINE
+ * Live Sales Popups | WhatsApp Voice Simulator | Interactive Calculators
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initLiveSalesToasts();
+  initWhatsAppVoicePlayer();
   initObjectionSimulator();
   initRevenueCalculator();
   initCountdownTimer();
+  initStickyBuyBar();
   initFaqAccordion();
-  initSmoothScroll();
 });
 
 /* ==========================================================================
-   1. SIMULADOR INTERATIVO DE OBJEÇÕES ("TEST DRIVE DO SCRIPT")
+   1. LIVE SALES NOTIFICATION TOASTS (FOMO & SOCIAL VALIDATION TRIGGER)
+   ========================================================================== */
+const recentSales = [
+  { name: 'Marcos R.', city: 'Americana - SP', item: 'Vendedor Pro + 4 Bônus', time: 'há 2 minutos' },
+  { name: 'Confecção Santa Fé', city: 'Brusque - SC', item: 'Vendedor Pro Completo', time: 'há 4 minutos' },
+  { name: 'Juliana P.', city: 'Franca - SP', item: 'Vendedor Pro + 4 Bônus', time: 'há 7 minutos' },
+  { name: 'Têxtil Minas', city: 'Belo Horizonte - MG', item: 'Vendedor Pro Completo', time: 'há 9 minutos' },
+  { name: 'Rodrigo B.', city: 'Blumenau - SC', item: 'Vendedor Pro + 4 Bônus', time: 'há 11 minutos' },
+  { name: 'Eduardo M.', city: 'Goiânia - GO', item: 'Vendedor Pro Completo', time: 'há 14 minutos' },
+  { name: 'Ana Carolina S.', city: 'Caxias do Sul - RS', item: 'Vendedor Pro + 4 Bônus', time: 'há 17 minutos' }
+];
+
+function initLiveSalesToasts() {
+  const toastEl = document.getElementById('liveSalesToast');
+  const toastName = document.getElementById('toastName');
+  const toastCity = document.getElementById('toastCity');
+  const toastItem = document.getElementById('toastItem');
+  const toastTime = document.getElementById('toastTime');
+
+  if (!toastEl) return;
+
+  let currentIndex = 0;
+
+  function showNextToast() {
+    const sale = recentSales[currentIndex];
+    if (toastName) toastName.textContent = sale.name;
+    if (toastCity) toastCity.textContent = `de ${sale.city}`;
+    if (toastItem) toastItem.textContent = sale.item;
+    if (toastTime) toastTime.textContent = sale.time;
+
+    toastEl.classList.add('show');
+
+    // Hide after 4.5 seconds
+    setTimeout(() => {
+      toastEl.classList.remove('show');
+    }, 4500);
+
+    currentIndex = (currentIndex + 1) % recentSales.length;
+  }
+
+  // First trigger after 4 seconds, then repeat every 11 seconds
+  setTimeout(() => {
+    showNextToast();
+    setInterval(showNextToast, 11000);
+  }, 4000);
+}
+
+/* ==========================================================================
+   2. WHATSAPP VOICE NOTE INTERACTIVE SIMULATOR
+   ========================================================================== */
+function initWhatsAppVoicePlayer() {
+  const playBtn = document.getElementById('voicePlayBtn');
+  const waveBars = document.querySelectorAll('.wave-bar');
+  const timeLabel = document.getElementById('voiceTimeLabel');
+
+  if (!playBtn) return;
+
+  let isPlaying = false;
+  let currentSec = 0;
+  let intervalId = null;
+  const maxSec = 28;
+
+  playBtn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+
+    if (isPlaying) {
+      playBtn.textContent = '⏸';
+      waveBars.forEach(bar => bar.classList.add('playing'));
+
+      intervalId = setInterval(() => {
+        currentSec++;
+        const s = currentSec.toString().padStart(2, '0');
+        if (timeLabel) timeLabel.textContent = `0:${s}`;
+
+        if (currentSec >= maxSec) {
+          resetPlayer();
+        }
+      }, 1000);
+    } else {
+      pausePlayer();
+    }
+  });
+
+  function pausePlayer() {
+    isPlaying = false;
+    playBtn.textContent = '▶';
+    waveBars.forEach(bar => bar.classList.remove('playing'));
+    if (intervalId) clearInterval(intervalId);
+  }
+
+  function resetPlayer() {
+    pausePlayer();
+    currentSec = 0;
+    if (timeLabel) timeLabel.textContent = '0:28';
+  }
+}
+
+/* ==========================================================================
+   3. SIMULADOR DE OBJEÇÕES DO MERCADO TÊXTIL
    ========================================================================== */
 const objectionsData = [
   {
     id: 'preco-concorrente',
-    title: '💸 "O concorrente faz mais barato"',
-    customerMsg: 'Gostei do modelo, mas a confecção aqui perto me fez R$ 5 mais barato por camisa. Se você não cobrir o valor, vou fechar com eles.',
-    script: '"Entendo perfeitamente seu ponto. Se o foco fosse apenas preço de largada, eles seriam uma opção. Mas me tira uma dúvida rápida: você prefere economizar R$ 5 agora na peça ou evitar que a logo da sua empresa desbote e o tecido torça na 3ª lavagem dos colaboradores? Nós usamos malha penteada com costura dupla reforçada que dura o dobro do tempo. No fim do ano, seu custo real por uso cai pela metade. Vamos rodar o lote com o nosso padrão de durabilidade?"',
-    strategy: 'Custo por Uso & Reputação da Marca. Remove o foco do preço pontual e projeta o prejuízo de ter uniformes desbotados e funcionários desleixados.',
+    title: '💸 "O concorrente faz R$ 5 mais barato"',
+    customerMsg: 'Gostei da proposta, mas a outra confecção me fez R$ 5 mais barato por camisa polo. Se não cobrir o valor, vou fechar lá.',
+    script: '"Entendo perfeitamente, Roberto. Inclusive, se o foco fosse apenas preço de largada, eles seriam uma opção. Mas me tira uma dúvida rápida: você prefere economizar R$ 5 agora na peça ou evitar que a logo da sua empresa desbote e a costura torça na 3ª lavagem dos funcionários? Nós usamos malha penteada com costura dupla reforçada que dura o dobro do tempo. No final do ano, seu custo real por uso cai pela metade. Vamos garantir o lote com o nosso padrão de durabilidade?"',
+    strategy: 'Custo por Uso & Reputação da Marca. Remove o foco do centavo pontual e projeta a vergonha de ter uniformes desbotados em menos de 60 dias.',
     tag: 'Objeção de Preço'
   },
   {
     id: 'vou-ver-diretoria',
-    title: '👔 "Vou falar com a diretoria/sócio"',
-    customerMsg: 'Ficou ótimo o orçamento. Amanhã tenho reunião com a diretoria, vou levar a proposta e qualquer coisa te aviso!',
-    script: '"Perfeito! Para te ajudar a defender o projeto com a diretoria sem você ter que virar especialista em uniformes: qual você acha que vai ser a maior preocupação deles: o prazo para o evento ou a durabilidade do bordado? Eu preparo um mini-resumo executivo de 1 página em PDF com o comparativo de durabilidade e retorno para você só repassar. Posso te mandar agora?"',
+    title: '👔 "Vou falar com a diretoria e te aviso"',
+    customerMsg: 'Ficou ótimo o orçamento dos 80 conjuntos. Amanhã tenho reunião com a diretoria, vou apresentar a proposta e qualquer coisa te aviso!',
+    script: '"Perfeito! Para te ajudar a defender o projeto com a diretoria sem você ter que virar especialista em uniformes: qual você acha que vai ser a maior preocupação deles: o prazo para o evento ou o padrão de durabilidade do bordado? Eu preparo um mini-resumo executivo de 1 página em PDF com o comparativo de retorno para você só repassar. Posso te mandar agora?"',
     strategy: 'Facilitador de Aprovação & Identificação do Medo Oculto. Transforma o comprador em seu parceiro interno e descobre o verdadeiro ponto de atrito antes da reunião.',
     tag: 'Objeção de Terceiros'
   },
   {
     id: 'cliente-sumiu',
     title: '👻 Cliente visualizou e sumiu no WhatsApp',
-    customerMsg: '(Você enviou o orçamento completo de 60 conjuntos há 3 dias. O cliente visualizou, não respondeu e silenciou o contato).',
-    script: '"Oi, Carlos, tudo bem? Passando para uma checagem rápida de produção: você conseguiu analisar a cotação das 60 peças ou a renovação dos uniformes precisou ser adiada por aí? Se os planos mudaram, zero problemas! Só me dá um alô para eu liberar a reserva da matéria-prima no corte para o próximo cliente da fila."',
-    strategy: 'Desistência Nobre & Escassez de Matéria-Prima. Desarma a pressão de venda, gera alívio no cliente e estimula resposta imediata pelo medo de perder a vez no corte.',
+    customerMsg: '(Você enviou o orçamento completo de 60 uniformes há 3 dias. O cliente visualizou, não respondeu e silenciou a conversa).',
+    script: '"Oi, Carlos, tudo bem? Passando para uma checagem rápida de produção: você conseguiu avaliar a proposta das 60 peças ou o projeto dos uniformes precisou ser adiado por aí? Se os planos mudaram, zero problemas! Só me dá um alô para eu liberar a reserva da matéria-prima no corte para o próximo cliente da fila."',
+    strategy: 'Desistência Nobre & Escassez de Matéria-Prima. Desarma a pressão comercial, gera alívio no cliente e estimula resposta imediata pelo receio de perder o lote reservado.',
     tag: 'Reativação de Contato'
   },
   {
     id: 'prazo-longo',
     title: '⏱️ "Achei o prazo de 25 dias muito longo"',
-    customerMsg: '25 dias úteis? Nossa, achei muito demorado. Preciso disso pronto para a inauguração da nossa nova filial.',
-    script: '"Compreendo 100% a urgência da inauguração! Nosso prazo garante conferência peça por peça e bordado computadorizado perfeito sem falhas. Mas me diga: quantas peças são estritamente necessárias no dia da abertura? Conseguimos antecipar uma Remessa de Abertura com 30% do lote em 10 dias e entregar o saldo com tranquilidade. Isso resolve perfeitamente sua data?"',
+    customerMsg: '25 dias úteis? Achei muito tempo! Preciso disso pronto para a inauguração da nossa filial no dia 15.',
+    script: '"Compreendo 100% a urgência da inauguração! Nosso prazo garante conferência peça por peça e bordado computadorizado perfeito sem defeitos. Mas me diga: quantas peças são estritamente necessárias no dia da abertura? Conseguimos antecipar uma Remessa de Abertura com 30% do lote em 10 dias e entregar o saldo no cronograma padrão. Isso resolve perfeitamente sua data?"',
     strategy: 'Entrega Fracionada de Emergência. Salva a venda sem canibalizar o cronograma produtivo da sua fábrica.',
     tag: 'Objeção de Prazos'
   },
   {
     id: 'poucas-pecas',
     title: '📦 "Só quero 10 peças, faz preço de 100?"',
-    customerMsg: 'Minha empresa é enxuta, só preciso de 10 jalecos agora. Consegue me fazer o mesmo preço unitário de quem pede 100?',
-    script: '"Para 10 peças o custo de matriz e calibração de maquinário incide de forma mais pesada. Porém, o que a maioria dos nossos clientes desse porte faz: fecham as 10 peças hoje e já deixam programadas mais 15 peças para as contratações do semestre, travando a tabela com o desconto de lote. Vocês têm previsão de contratar até o final do ano? Se sim, já aprovo a condição especial para você agora."',
-    strategy: 'Consolidação de Demanda Futura. Aumenta o ticket médio sem prostituir sua margem de lucro.',
+    customerMsg: 'Minha empresa é pequena, só preciso de 10 camisas agora. Consegue me fazer o mesmo preço unitário de quem pede 100?',
+    script: '"Para 10 peças o custo de matriz e calibração de maquinário incide de forma concentrada. Porém, o que a maioria dos clientes do seu porte faz: fecham as 10 peças hoje e já deixam programadas mais 15 peças para as contratações do trimestre, travando a tabela com o desconto de lote. Vocês têm previsão de contratar até o final do ano? Se sim, já aprovo a condição especial para você agora."',
+    strategy: 'Consolidação de Demanda Futura. Aumenta o volume e o ticket médio sem prostituir sua margem de lucro.',
     tag: 'Objeção de Quantidade'
   }
 ];
@@ -66,25 +166,22 @@ function initObjectionSimulator() {
 
   if (!container) return;
 
-  // Render buttons
   container.innerHTML = '';
   objectionsData.forEach((item, index) => {
     const btn = document.createElement('button');
-    btn.className = `objection-btn ${index === 0 ? 'active' : ''}`;
-    btn.setAttribute('data-id', item.id);
+    btn.className = `sim-btn ${index === 0 ? 'active' : ''}`;
     btn.innerHTML = `
       <span>${item.title}</span>
-      <span class="chevron">→</span>
+      <span style="color: var(--fire-cta); font-weight: 900;">→</span>
     `;
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.objection-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       loadObjection(item);
     });
     container.appendChild(btn);
   });
 
-  // Load initial objection
   loadObjection(objectionsData[0]);
 
   function loadObjection(item) {
@@ -114,7 +211,7 @@ function initObjectionSimulator() {
 }
 
 /* ==========================================================================
-   2. CALCULADORA INTERATIVA DE PERDA DE VENDAS
+   4. CALCULADORA DE PREJUÍZO VS. INVESTIMENTO DE R$ 47
    ========================================================================== */
 function initRevenueCalculator() {
   const sliderQuotes = document.getElementById('sliderQuotes');
@@ -139,9 +236,7 @@ function initRevenueCalculator() {
     if (valQuotes) valQuotes.textContent = `${quotes} orçamentos/mês`;
     if (valTicket) valTicket.textContent = currencyFormatter.format(ticket);
 
-    // Média de perda por falta de scripts persuasivos no fechamento: ~40% das oportunidades
     const lostPerMonth = quotes * 0.40 * ticket;
-    // Potencial mínimo de recuperação fechando apenas +3 pedidos por mês com o Vendedor Pro
     const recoveredPerMonth = 3 * ticket;
 
     if (displayLost) {
@@ -154,19 +249,18 @@ function initRevenueCalculator() {
 
   sliderQuotes.addEventListener('input', updateCalculations);
   sliderTicket.addEventListener('input', updateCalculations);
-
-  // Initial calculation run
   updateCalculations();
 }
 
 /* ==========================================================================
-   3. TIMER REGRESSIVO DE OFERTA
+   5. TIMER REGRESSIVO DE ESCASSEZ
    ========================================================================== */
 function initCountdownTimer() {
   const topTimer = document.getElementById('countdownTop');
   const offerTimer = document.getElementById('countdownOffer');
+  const stickyTimer = document.getElementById('countdownSticky');
 
-  let totalSeconds = 14 * 60 + 38; // 14 min 38 seg
+  let totalSeconds = 12 * 60 + 44; // 12 min 44 seg
 
   function formatTime(sec) {
     const m = Math.floor(sec / 60);
@@ -178,16 +272,33 @@ function initCountdownTimer() {
     if (totalSeconds > 0) {
       totalSeconds--;
     } else {
-      totalSeconds = 15 * 60; // reset loop for urgency preservation
+      totalSeconds = 15 * 60;
     }
     const formatted = formatTime(totalSeconds);
     if (topTimer) topTimer.textContent = formatted;
     if (offerTimer) offerTimer.textContent = formatted;
+    if (stickyTimer) stickyTimer.textContent = formatted;
   }, 1000);
 }
 
 /* ==========================================================================
-   4. FAQ ACCORDION
+   6. STICKY BOTTOM BUY BAR
+   ========================================================================== */
+function initStickyBuyBar() {
+  const bar = document.getElementById('stickyBuyBar');
+  if (!bar) return;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 450) {
+      bar.classList.add('visible');
+    } else {
+      bar.classList.remove('visible');
+    }
+  });
+}
+
+/* ==========================================================================
+   7. FAQ ACCORDION
    ========================================================================== */
 function initFaqAccordion() {
   const faqItems = document.querySelectorAll('.faq-item');
@@ -198,38 +309,9 @@ function initFaqAccordion() {
 
     button.addEventListener('click', () => {
       const isOpen = item.classList.contains('active');
-
-      // Close all other items
-      faqItems.forEach(otherItem => {
-        otherItem.classList.remove('active');
-      });
-
-      // Toggle current item
+      faqItems.forEach(otherItem => otherItem.classList.remove('active'));
       if (!isOpen) {
         item.classList.add('active');
-      }
-    });
-  });
-}
-
-/* ==========================================================================
-   5. SMOOTH SCROLL PARA BOTÕES DE CTA
-   ========================================================================== */
-function initSmoothScroll() {
-  const ctaLinks = document.querySelectorAll('a[href^="#"]');
-
-  ctaLinks.forEach(link => {
-    link.addEventListener('click', e => {
-      const targetId = link.getAttribute('href');
-      if (targetId === '#' || !targetId) return;
-
-      const targetEl = document.querySelector(targetId);
-      if (targetEl) {
-        e.preventDefault();
-        targetEl.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
       }
     });
   });
