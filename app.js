@@ -116,23 +116,15 @@ function initObjectionSimulator() {
 
   if (!container) return;
 
-  container.innerHTML = '';
-  objectionsData.forEach((item, index) => {
-    const btn = document.createElement('button');
-    btn.className = `sim-btn ${index === 0 ? 'active' : ''}`;
-    btn.innerHTML = `
-      <span>${item.title}</span>
-      <span style="color: var(--fire-cta); font-weight: 900;">→</span>
-    `;
+  const buttons = container.querySelectorAll('.sim-btn');
+  buttons.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+      buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      loadObjection(item);
+      const item = objectionsData[index] || objectionsData.find(d => d.id === btn.getAttribute('data-id'));
+      if (item) loadObjection(item);
     });
-    container.appendChild(btn);
   });
-
-  loadObjection(objectionsData[0]);
 
   function loadObjection(item) {
     if (displayTag) displayTag.textContent = item.tag;
@@ -203,14 +195,24 @@ function initRevenueCalculator() {
 }
 
 /* ==========================================================================
-   5. TIMER REGRESSIVO DE ESCASSEZ
+   5. TIMER REGRESSIVO PERSISTENTE (NÃO RESETA NO F5)
    ========================================================================== */
 function initCountdownTimer() {
   const topTimer = document.getElementById('countdownTop');
   const offerTimer = document.getElementById('countdownOffer');
   const stickyTimer = document.getElementById('countdownSticky');
 
-  let totalSeconds = 12 * 60 + 44; // 12 min 44 seg
+  const STORAGE_KEY = 'vendedor_pro_offer_timer';
+  const NOW = Date.now();
+  let endTime = localStorage.getItem(STORAGE_KEY);
+
+  // Se não existir ou tiver expirado há muito tempo, agenda para 14 min a partir de agora
+  if (!endTime || NOW > (parseInt(endTime, 10) + 1800 * 1000)) {
+    endTime = NOW + (14 * 60 + 22) * 1000;
+    localStorage.setItem(STORAGE_KEY, endTime.toString());
+  } else {
+    endTime = parseInt(endTime, 10);
+  }
 
   function formatTime(sec) {
     const m = Math.floor(sec / 60);
@@ -218,17 +220,18 @@ function initCountdownTimer() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
-  setInterval(() => {
-    if (totalSeconds > 0) {
-      totalSeconds--;
-    } else {
-      totalSeconds = 15 * 60;
-    }
-    const formatted = formatTime(totalSeconds);
+  function update() {
+    const remainingMs = Math.max(0, endTime - Date.now());
+    const remainingSec = Math.floor(remainingMs / 1000);
+    const formatted = formatTime(remainingSec > 0 ? remainingSec : 0);
+
     if (topTimer) topTimer.textContent = formatted;
     if (offerTimer) offerTimer.textContent = formatted;
     if (stickyTimer) stickyTimer.textContent = formatted;
-  }, 1000);
+  }
+
+  update();
+  setInterval(update, 1000);
 }
 
 /* ==========================================================================

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -189,7 +189,26 @@
         <div class="sim-controls">
           <h3 class="sim-controls-title">Escolha a Objeção do Cliente:</h3>
           <div class="sim-btn-list" id="objectionButtonsContainer">
-            <!-- Populated dynamically via app.js -->
+            <button class="sim-btn active" data-id="preco-concorrente">
+              <span>💸 "O concorrente faz R$ 5 mais barato"</span>
+              <span style="color: var(--fire-cta); font-weight: 900;">→</span>
+            </button>
+            <button class="sim-btn" data-id="vou-ver-diretoria">
+              <span>👔 "Vou falar com a diretoria e te aviso"</span>
+              <span style="color: var(--fire-cta); font-weight: 900;">→</span>
+            </button>
+            <button class="sim-btn" data-id="cliente-sumiu">
+              <span>👻 Cliente visualizou e sumiu no WhatsApp</span>
+              <span style="color: var(--fire-cta); font-weight: 900;">→</span>
+            </button>
+            <button class="sim-btn" data-id="prazo-longo">
+              <span>⏱️ "Achei o prazo de 25 dias muito longo"</span>
+              <span style="color: var(--fire-cta); font-weight: 900;">→</span>
+            </button>
+            <button class="sim-btn" data-id="poucas-pecas">
+              <span>📦 "Só quero 10 peças, faz preço de 100?"</span>
+              <span style="color: var(--fire-cta); font-weight: 900;">→</span>
+            </button>
           </div>
         </div>
 
@@ -204,13 +223,13 @@
 
             <div class="sim-client-bubble">
               <strong style="display: block; font-size: 0.75rem; color: #f87171; margin-bottom: 4px;">🔴 CLIENTE DIZ:</strong>
-              <p id="simulatorCustomerMsg">Carregando...</p>
+              <p id="simulatorCustomerMsg">Gostei da proposta, mas a outra confecção me fez R$ 5 mais barato por camisa polo. Se não cobrir o valor, vou fechar lá.</p>
             </div>
 
             <div class="sim-pro-bubble">
               <strong style="display: block; font-size: 0.75rem; color: #00e676; margin-bottom: 8px;">🟢 RESPOSTA VENDEDOR PRO (COPIAR E COLAR):</strong>
-              <p class="sim-script-quote" id="simulatorScriptText">Carregando script...</p>
-              <div class="sim-strategy-box" id="simulatorScriptWhy">Carregando estratégia...</div>
+              <p class="sim-script-quote" id="simulatorScriptText">"Entendo perfeitamente, Roberto. Inclusive, se o foco fosse apenas preço de largada, eles seriam uma opção. Mas me tira uma dúvida rápida: você prefere economizar R$ 5 agora na peça ou evitar que a logo da sua empresa desbote e a costura torça na 3ª lavagem dos funcionários? Nós usamos malha penteada com costura dupla reforçada que dura o dobro do tempo. No final do ano, seu custo real por uso cai pela metade. Vamos garantir o lote com o nosso padrão de durabilidade?"</p>
+              <div class="sim-strategy-box" id="simulatorScriptWhy"><strong>Por que funciona:</strong> Custo por Uso & Reputação da Marca. Remove o foco do centavo pontual e projeta a vergonha de ter uniformes desbotados em menos de 60 dias.</div>
             </div>
           </div>
         </div>
@@ -502,6 +521,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
