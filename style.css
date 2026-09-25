@@ -416,6 +416,10 @@ h1, h2, h3, h4 {
   gap: 12px;
 }
 
+.hero-middle-cta {
+  display: none;
+}
+
 .hero-micro-copy {
   display: flex;
   align-items: center;
@@ -1153,11 +1157,39 @@ h1, h2, h3, h4 {
     order: 2;
     font-size: 1.7rem !important;
     line-height: 1.22;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
+  }
+
+  /* Middle CTA button between Title and Subtitle */
+  .hero-middle-cta {
+    order: 3;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .hero-middle-cta .btn-fire-cta {
+    white-space: nowrap !important;
+    font-size: clamp(0.72rem, 3.4vw, 0.88rem) !important;
+    padding: 16px 10px !important;
+    gap: 8px !important;
+    letter-spacing: 0.01em !important;
+    width: 100%;
+  }
+
+  .hero-middle-cta .btn-fire-cta span {
+    white-space: nowrap !important;
+  }
+
+  .hero-middle-cta .btn-fire-cta svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
   }
 
   .hero-subtitle {
-    order: 3;
+    order: 4;
     font-size: 0.94rem;
     line-height: 1.55;
     margin-bottom: 16px;
@@ -1165,7 +1197,7 @@ h1, h2, h3, h4 {
   }
 
   .social-proof-rating {
-    order: 4;
+    order: 5;
     font-size: 0.78rem;
     padding: 6px 14px;
     margin: 0 auto 16px;
@@ -1179,9 +1211,9 @@ h1, h2, h3, h4 {
     font-size: 1rem;
   }
 
-  /* Mockup positioned ABOVE the CTA button on mobile */
+  /* Mockup positioned ABOVE the bottom CTA button on mobile */
   .hero-visual {
-    order: 5;
+    order: 6;
     margin-top: 4px;
     margin-bottom: 22px;
     width: 100%;
@@ -1204,7 +1236,7 @@ h1, h2, h3, h4 {
   }
 
   .hero-cta-group {
-    order: 6;
+    order: 7;
     width: 100%;
   }
 
