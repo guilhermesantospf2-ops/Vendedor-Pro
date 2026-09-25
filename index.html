@@ -11,7 +11,40 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1625813562427090');
+    fbq('track', 'PageView');
+
+    // Rastreia cliques nos botões de compra para enviar InitiateCheckout ao Facebook
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('a[href*="kiwify.com.br"]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+              content_name: 'Vendedor Pro - 100+ Frases',
+              value: 47.00,
+              currency: 'BRL'
+            });
+          }
+        });
+      });
+    });
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1625813562427090&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
 </head>
 <body>
 

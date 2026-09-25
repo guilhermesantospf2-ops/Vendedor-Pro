@@ -1130,7 +1130,18 @@ h1, h2, h3, h4 {
     text-align: center;
   }
 
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-content {
+    display: contents;
+  }
+
   .hero-urgency-pill {
+    order: 1;
     font-size: 0.7rem;
     padding: 5px 12px;
     margin-bottom: 12px;
@@ -1139,22 +1150,25 @@ h1, h2, h3, h4 {
   }
 
   .hero-title {
+    order: 2;
     font-size: 1.7rem !important;
     line-height: 1.22;
     margin-bottom: 14px;
   }
 
   .hero-subtitle {
+    order: 3;
     font-size: 0.94rem;
     line-height: 1.55;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     padding: 0 4px;
   }
 
   .social-proof-rating {
+    order: 4;
     font-size: 0.78rem;
     padding: 6px 14px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     flex-direction: column;
     gap: 4px;
     width: 100%;
@@ -1163,6 +1177,53 @@ h1, h2, h3, h4 {
 
   .rating-stars {
     font-size: 1rem;
+  }
+
+  /* Mockup positioned ABOVE the CTA button on mobile */
+  .hero-visual {
+    order: 5;
+    margin-top: 4px;
+    margin-bottom: 22px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mockup-container {
+    max-width: 270px;
+    transform: none !important;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 69, 0, 0.2);
+  }
+
+  .floating-savings-tag {
+    top: -10px;
+    right: -6px;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .hero-cta-group {
+    order: 6;
+    width: 100%;
+  }
+
+  .hero-cta-group .btn-fire-cta {
+    white-space: nowrap !important;
+    font-size: clamp(0.72rem, 3.4vw, 0.88rem) !important;
+    padding: 16px 10px !important;
+    gap: 8px !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .hero-cta-group .btn-fire-cta span {
+    white-space: nowrap !important;
+  }
+
+  .hero-cta-group .btn-fire-cta svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
   }
 
   .btn-fire-cta:not(.nav-cta-btn) {
@@ -1178,24 +1239,6 @@ h1, h2, h3, h4 {
     gap: 6px;
     font-size: 0.78rem;
     margin-top: 10px;
-  }
-
-  .hero-visual {
-    margin-top: 24px;
-  }
-
-  .mockup-container {
-    max-width: 270px;
-    transform: none !important;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 69, 0, 0.2);
-  }
-
-  .floating-savings-tag {
-    top: -10px;
-    right: -6px;
-    font-size: 0.75rem;
-    padding: 6px 12px;
   }
 
   /* Segments Bar Mobile */
