@@ -417,7 +417,13 @@ h1, h2, h3, h4 {
 }
 
 .hero-middle-cta {
-  display: none;
+  display: flex;
+  margin: 18px 0 24px;
+}
+
+.hero-middle-cta .btn-fire-cta {
+  font-size: 1.15rem;
+  padding: 18px 36px;
 }
 
 .hero-micro-copy {
