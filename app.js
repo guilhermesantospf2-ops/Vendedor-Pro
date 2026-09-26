@@ -355,51 +355,59 @@ function initHeroVideo() {
     });
   }
 
-  // 5. Inicialização com ÁUDIO ATIVADO imediato
-  // O navegador tenta tocar direto com som (volume 100%)
-  video.muted = false;
-  video.volume = 1.0;
+  // 5. Garantir que o vídeo INICIE SOZINHO IMEDIATAMENTE (Autoplay 100% à prova de falhas)
+  video.muted = true;
+  video.defaultMuted = true;
+
+  const startPlayingImmediately = () => {
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Fallback redundante para navegadores com restrição extrema
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    }
+  };
+
+  // Dispara imediatamente e também no evento de load da página
+  startPlayingImmediately();
+  window.addEventListener('load', startPlayingImmediately);
+
+  // 6. Ativação de Áudio Instantânea no primeiro toque/clique/rolagem
+  let audioUnlocked = false;
 
   const unlockAudio = () => {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+
     video.muted = false;
     video.volume = 1.0;
-    // Se o usuário interagiu nos primeiros 3.5 segundos, reinicia para não perder o início da fala
+
+    // Se o lead interagiu nos primeiros 3.5 segundos, volta para o início para ouvir a frase inicial
     if (video.currentTime < 3.5) {
       video.currentTime = 0;
     }
+
     if (unmuteBtn) {
       unmuteBtn.style.opacity = '0';
       setTimeout(() => {
         unmuteBtn.style.display = 'none';
       }, 200);
     }
+
+    video.play().catch(() => {});
+
     ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
       window.removeEventListener(evt, unlockAudio, true);
     });
-    video.play().catch(() => {});
   };
 
-  const playPromise = video.play();
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
-      // Sucesso! O navegador permitiu áudio imediato sem cliques adicionais
-      if (unmuteBtn) unmuteBtn.style.display = 'none';
-    }).catch(() => {
-      // Políticas rigorosas de navegadores móveis/desktop exigem 1 interação do usuário
-      // Para manter o vídeo já rodando em tela enquanto isso, ativa mudo temporário:
-      video.muted = true;
-      video.play().catch(() => {});
-      if (unmuteBtn) {
-        unmuteBtn.style.display = 'inline-flex';
-        unmuteBtn.style.opacity = '1';
-      }
-
-      // No PRIMEIRO toque, clique ou rolagem em qualquer lugar da página, ativa o som instantaneamente!
-      ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
-        window.addEventListener(evt, unlockAudio, { once: true, capture: true });
-      });
-    });
-  }
+  // Escuta primeiro clique/toque em qualquer lugar da tela para ativar o som
+  ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
+    window.addEventListener(evt, unlockAudio, { once: true, capture: true });
+  });
 
   if (unmuteBtn) {
     unmuteBtn.addEventListener('click', (e) => {
