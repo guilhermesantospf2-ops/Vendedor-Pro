@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=20">
+  <link rel="stylesheet" href="style.css?v=21">
 
   <!-- Meta Pixel Code -->
   <script>
@@ -94,6 +94,32 @@
           <h1 class="hero-title">
             Chega de trabalhar de graça fazendo orçamento para cliente <span class="text-gradient-fire">sumir no WhatsApp.</span>
           </h1>
+
+          <!-- Vídeo VSL Demonstrativo com Autoplay Imediato -->
+          <div class="hero-video-wrapper">
+            <div class="hero-video-container" id="heroVideoContainer">
+              <video 
+                id="heroVideo" 
+                class="hero-video-element" 
+                src="assets/vendedor_pro_apresentacao.mp4" 
+                poster="assets/video_poster.jpg" 
+                autoplay 
+                muted 
+                playsinline 
+                loop 
+                controls 
+                preload="auto"
+              >
+                Seu navegador não suporta a tag de vídeo.
+              </video>
+              
+              <!-- Botão para ativar som instantaneamente -->
+              <button type="button" class="video-unmute-btn" id="videoUnmuteBtn" aria-label="Ativar som do vídeo">
+                <span class="unmute-speaker-icon">🔊</span>
+                <span class="unmute-text">Vídeo com som — <strong>Clique para ouvir</strong></span>
+              </button>
+            </div>
+          </div>
 
           <div class="hero-middle-cta">
             <a href="https://pay.kiwify.com.br/laZh4bN" target="_blank" rel="noopener" class="btn-fire-cta">

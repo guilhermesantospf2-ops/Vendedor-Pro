@@ -4,6 +4,7 @@
  */
 
 function initApp() {
+  try { initHeroVideo(); } catch (e) { console.error('Hero video error:', e); }
   try { initCountdownTimer(); } catch (e) { console.error('Timer error:', e); }
   try { initLiveSalesToasts(); } catch (e) { console.error('Toast error:', e); }
   try { initObjectionSimulator(); } catch (e) { console.error('Simulator error:', e); }
@@ -303,3 +304,58 @@ function initFaqAccordion() {
     });
   });
 }
+
+/* ==========================================================================
+   8. HERO VSL VIDEO CONTROLLER (AUTOPLAY & SEAMLESS UNMUTE)
+   ========================================================================== */
+function initHeroVideo() {
+  const video = document.getElementById('heroVideo');
+  const unmuteBtn = document.getElementById('videoUnmuteBtn');
+  if (!video) return;
+
+  // Garante autoplay imediato iniciando mudo (política universal dos navegadores)
+  video.muted = true;
+  
+  const attemptPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Se as políticas do navegador bloquearem até o vídeo mudo, inicia no primeiro toque/clique
+        const forcePlayOnInteraction = () => {
+          video.play();
+          document.removeEventListener('click', forcePlayOnInteraction);
+          document.removeEventListener('touchstart', forcePlayOnInteraction);
+        };
+        document.addEventListener('click', forcePlayOnInteraction, { once: true });
+        document.addEventListener('touchstart', forcePlayOnInteraction, { once: true });
+      });
+    }
+  };
+
+  attemptPlay();
+
+  // Ativação de áudio fluida
+  if (unmuteBtn) {
+    unmuteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      video.muted = false;
+      video.volume = 1.0;
+      unmuteBtn.style.opacity = '0';
+      setTimeout(() => {
+        unmuteBtn.style.display = 'none';
+      }, 250);
+      video.play();
+    });
+
+    // Se o usuário clicar nos controles nativos e tirar o mudo
+    video.addEventListener('volumechange', () => {
+      if (!video.muted && video.volume > 0) {
+        unmuteBtn.style.opacity = '0';
+        setTimeout(() => {
+          unmuteBtn.style.display = 'none';
+        }, 250);
+      }
+    });
+  }
+}
+
