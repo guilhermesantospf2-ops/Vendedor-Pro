@@ -306,7 +306,7 @@ function initFaqAccordion() {
 }
 
 /* ==========================================================================
-   8. HERO VSL VIDEO CONTROLLER (CLEAN PLAYER: AUTOPLAY, PROGRESS & REPLAY)
+   8. HERO VSL VIDEO CONTROLLER (RETENTION PROGRESS & INSTANT AUDIO AUTOPLAY)
    ========================================================================== */
 function initHeroVideo() {
   const video = document.getElementById('heroVideo');
@@ -318,84 +318,99 @@ function initHeroVideo() {
 
   if (!video) return;
 
-  // Garante autoplay imediato iniciando mudo (política universal dos navegadores)
-  video.muted = true;
-  
-  const attemptPlay = () => {
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Se as políticas do navegador bloquearem até o vídeo mudo, inicia no primeiro toque/clique
-        const forcePlayOnInteraction = () => {
-          video.play();
-          document.removeEventListener('click', forcePlayOnInteraction);
-          document.removeEventListener('touchstart', forcePlayOnInteraction);
-        };
-        document.addEventListener('click', forcePlayOnInteraction, { once: true });
-        document.addEventListener('touchstart', forcePlayOnInteraction, { once: true });
-      });
-    }
-  };
-
-  attemptPlay();
-
-  // Atualização em tempo real da barrinha de progresso limpa
+  // 1. Curva Psicológica de Retenção (Avança rápido nos primeiros 10s e depois desacelera)
   video.addEventListener('timeupdate', () => {
     if (video.duration && progressFill) {
-      const percent = (video.currentTime / video.duration) * 100;
-      progressFill.style.width = `${percent}%`;
+      const realRatio = Math.min(1, Math.max(0, video.currentTime / video.duration));
+      // Fórmula de retenção VSL: (tempo/total)^0.40
+      // 5s -> ~37% | 10s -> ~49% | 20s -> ~65% | 40s -> ~86% | 58s -> 100%
+      const psychologicalPercent = Math.min(100, Math.pow(realRatio, 0.40) * 100);
+      progressFill.style.width = `${psychologicalPercent.toFixed(1)}%`;
     }
   });
 
-  // Vídeo não pode ser pausado antes de finalizar
+  // 2. Não permite pausar antes de terminar
   video.addEventListener('pause', () => {
     if (!video.ended) {
-      video.play();
+      video.play().catch(() => {});
     }
   });
 
-  // Ao finalizar o vídeo: exibe a opção de assistir novamente
+  // 3. Ao finalizar o vídeo: exibe o botão de assistir novamente
   video.addEventListener('ended', () => {
     if (progressFill) progressFill.style.width = '100%';
     if (replayOverlay) replayOverlay.classList.add('show');
   });
 
-  // Botão de Assistir Novamente
+  // 4. Botão de Assistir Novamente
   if (replayBtn) {
     replayBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (replayOverlay) replayOverlay.classList.remove('show');
       video.currentTime = 0;
+      video.muted = false;
+      video.volume = 1.0;
       if (progressFill) progressFill.style.width = '0%';
-      video.play();
+      video.play().catch(() => {});
     });
   }
 
-  // Ativação de áudio fluida com 1 clique
-  const activateSound = () => {
-    if (video.muted) {
-      video.muted = false;
-      video.volume = 1.0;
-      if (unmuteBtn) {
-        unmuteBtn.style.opacity = '0';
-        setTimeout(() => {
-          unmuteBtn.style.display = 'none';
-        }, 250);
-      }
-      video.play();
+  // 5. Inicialização com ÁUDIO ATIVADO imediato
+  // O navegador tenta tocar direto com som (volume 100%)
+  video.muted = false;
+  video.volume = 1.0;
+
+  const unlockAudio = () => {
+    video.muted = false;
+    video.volume = 1.0;
+    // Se o usuário interagiu nos primeiros 3.5 segundos, reinicia para não perder o início da fala
+    if (video.currentTime < 3.5) {
+      video.currentTime = 0;
     }
+    if (unmuteBtn) {
+      unmuteBtn.style.opacity = '0';
+      setTimeout(() => {
+        unmuteBtn.style.display = 'none';
+      }, 200);
+    }
+    ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
+      window.removeEventListener(evt, unlockAudio, true);
+    });
+    video.play().catch(() => {});
   };
+
+  const playPromise = video.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      // Sucesso! O navegador permitiu áudio imediato sem cliques adicionais
+      if (unmuteBtn) unmuteBtn.style.display = 'none';
+    }).catch(() => {
+      // Políticas rigorosas de navegadores móveis/desktop exigem 1 interação do usuário
+      // Para manter o vídeo já rodando em tela enquanto isso, ativa mudo temporário:
+      video.muted = true;
+      video.play().catch(() => {});
+      if (unmuteBtn) {
+        unmuteBtn.style.display = 'inline-flex';
+        unmuteBtn.style.opacity = '1';
+      }
+
+      // No PRIMEIRO toque, clique ou rolagem em qualquer lugar da página, ativa o som instantaneamente!
+      ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, unlockAudio, { once: true, capture: true });
+      });
+    });
+  }
 
   if (unmuteBtn) {
     unmuteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      activateSound();
+      unlockAudio();
     });
   }
 
   if (container) {
     container.addEventListener('click', () => {
-      activateSound();
+      unlockAudio();
     });
   }
 }
