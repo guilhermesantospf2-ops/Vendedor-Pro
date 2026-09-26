@@ -306,121 +306,57 @@ function initFaqAccordion() {
 }
 
 /* ==========================================================================
-   8. HERO VSL VIDEO CONTROLLER (RETENTION PROGRESS & INSTANT AUDIO AUTOPLAY)
+   8. HERO VSL VIDEO CONTROLLER (CLEAN PLAYER: AUTOPLAY, RETENTION PROGRESS & REPLAY)
    ========================================================================== */
 function initHeroVideo() {
   const video = document.getElementById('heroVideo');
-  const container = document.getElementById('heroVideoContainer');
-  const unmuteBtn = document.getElementById('videoUnmuteBtn');
   const progressFill = document.getElementById('videoProgressFill');
   const replayOverlay = document.getElementById('videoReplayOverlay');
   const replayBtn = document.getElementById('videoReplayBtn');
 
   if (!video) return;
 
-  // 1. Curva Psicológica de Retenção (Avança rápido nos primeiros 10s e depois desacelera)
+  // 1. Início imediato automático (100% contínuo, sem travas, sem pulos e sem reinício)
+  video.muted = true;
+  video.play().catch(() => {});
+  window.addEventListener('load', () => {
+    video.play().catch(() => {});
+  });
+
+  // 2. Curva Psicológica de Retenção (Avança rápido nos primeiros 10s e desacelera)
   video.addEventListener('timeupdate', () => {
     if (video.duration && progressFill) {
       const realRatio = Math.min(1, Math.max(0, video.currentTime / video.duration));
-      // Fórmula de retenção VSL: (tempo/total)^0.40
-      // 5s -> ~37% | 10s -> ~49% | 20s -> ~65% | 40s -> ~86% | 58s -> 100%
+      // Fórmula de retenção: (tempo/total)^0.40
       const psychologicalPercent = Math.min(100, Math.pow(realRatio, 0.40) * 100);
       progressFill.style.width = `${psychologicalPercent.toFixed(1)}%`;
     }
   });
 
-  // 2. Não permite pausar antes de terminar
+  // 3. Sem pausa: se houver tentativa de pausa, continua rodando direto
   video.addEventListener('pause', () => {
     if (!video.ended) {
       video.play().catch(() => {});
     }
   });
 
-  // 3. Ao finalizar o vídeo: exibe o botão de assistir novamente
+  // 4. Ao finalizar o vídeo: exibe botão de assistir novamente
   video.addEventListener('ended', () => {
     if (progressFill) progressFill.style.width = '100%';
     if (replayOverlay) replayOverlay.classList.add('show');
   });
 
-  // 4. Botão de Assistir Novamente
+  // 5. Botão de Assistir Novamente
   if (replayBtn) {
     replayBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (replayOverlay) replayOverlay.classList.remove('show');
       video.currentTime = 0;
-      video.muted = false;
-      video.volume = 1.0;
       if (progressFill) progressFill.style.width = '0%';
       video.play().catch(() => {});
     });
   }
-
-  // 5. Garantir que o vídeo INICIE SOZINHO IMEDIATAMENTE (Autoplay 100% à prova de falhas)
-  video.muted = true;
-  video.defaultMuted = true;
-
-  const startPlayingImmediately = () => {
-    video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Fallback redundante para navegadores com restrição extrema
-        video.muted = true;
-        video.play().catch(() => {});
-      });
-    }
-  };
-
-  // Dispara imediatamente e também no evento de load da página
-  startPlayingImmediately();
-  window.addEventListener('load', startPlayingImmediately);
-
-  // 6. Ativação de Áudio Instantânea no primeiro toque/clique/rolagem
-  let audioUnlocked = false;
-
-  const unlockAudio = () => {
-    if (audioUnlocked) return;
-    audioUnlocked = true;
-
-    video.muted = false;
-    video.volume = 1.0;
-
-    // Se o lead interagiu nos primeiros 3.5 segundos, volta para o início para ouvir a frase inicial
-    if (video.currentTime < 3.5) {
-      video.currentTime = 0;
-    }
-
-    if (unmuteBtn) {
-      unmuteBtn.style.opacity = '0';
-      setTimeout(() => {
-        unmuteBtn.style.display = 'none';
-      }, 200);
-    }
-
-    video.play().catch(() => {});
-
-    ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
-      window.removeEventListener(evt, unlockAudio, true);
-    });
-  };
-
-  // Escuta primeiro clique/toque em qualquer lugar da tela para ativar o som
-  ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
-    window.addEventListener(evt, unlockAudio, { once: true, capture: true });
-  });
-
-  if (unmuteBtn) {
-    unmuteBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      unlockAudio();
-    });
-  }
-
-  if (container) {
-    container.addEventListener('click', () => {
-      unlockAudio();
-    });
-  }
 }
+
 
 

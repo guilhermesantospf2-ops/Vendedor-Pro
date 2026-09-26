@@ -447,53 +447,7 @@ h1, h2, h3, h4 {
   user-select: none;
 }
 
-.video-unmute-btn {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(14, 17, 26, 0.92);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--fire-cta);
-  color: #ffffff;
-  padding: 8px 18px;
-  border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 69, 0, 0.4);
-  z-index: 5;
-  transition: all 0.25s ease;
-  animation: pulse-unmute 2.2s infinite;
-}
 
-.video-unmute-btn:hover {
-  transform: translateX(-50%) scale(1.04);
-  background: var(--fire-cta);
-  box-shadow: 0 8px 25px rgba(255, 69, 0, 0.65);
-}
-
-.video-unmute-btn strong {
-  color: var(--gold-bright);
-}
-
-.video-unmute-btn:hover strong {
-  color: #ffffff;
-}
-
-.unmute-speaker-icon {
-  font-size: 1rem;
-}
-
-@keyframes pulse-unmute {
-  0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 69, 0, 0.6); }
-  70% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 0 10px rgba(255, 69, 0, 0); }
-  100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 69, 0, 0); }
-}
 
 /* Barrinha de Progresso Psicológica de Alta Retenção (Avanço Rápido) */
 .video-progress-track {
