@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=32">
 
   <!-- Meta Pixel Code -->
   <script>
@@ -106,7 +106,6 @@
                 autoplay 
                 muted 
                 playsinline 
-                loop
                 preload="auto" 
                 tabindex="-1" 
                 disablePictureInPicture 
@@ -123,6 +122,17 @@
               <!-- Barrinha de Progresso Limpa (Apenas Visualização) -->
               <div class="video-progress-track" aria-hidden="true">
                 <div class="video-progress-fill" id="videoProgressFill"></div>
+              </div>
+
+              <!-- Overlay com opção de Reproduzir Novamente ao finalizar -->
+              <div class="video-replay-overlay" id="videoReplayOverlay">
+                <button type="button" class="btn-video-replay" id="videoReplayBtn" aria-label="Assistir o vídeo novamente">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 4 1 10 7 10"></polyline>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                  </svg>
+                  <span>Assistir Novamente</span>
+                </button>
               </div>
             </div>
           </div>
@@ -602,6 +612,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=31"></script>
+  <script src="app.js?v=32"></script>
 </body>
 </html>

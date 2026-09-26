@@ -356,10 +356,32 @@ function initHeroVideo() {
     });
   }
 
-  // Ativação automática de áudio no primeiro toque na tela, rolagem ou clique (sem o lead precisar caçar o botão)
+  // Ativação automática no primeiro toque ou rolagem
   ['touchstart', 'pointerdown', 'click', 'scroll'].forEach((evt) => {
     window.addEventListener(evt, enableSound, { once: true, capture: true, passive: true });
   });
+
+  const replayOverlay = document.getElementById('videoReplayOverlay');
+  const replayBtn = document.getElementById('videoReplayBtn');
+
+  // Ao finalizar o vídeo: para a reprodução e exibe a opção de Assistir Novamente
+  video.addEventListener('ended', () => {
+    if (progressFill) progressFill.style.width = '100%';
+    if (replayOverlay) replayOverlay.classList.add('show');
+  });
+
+  // Botão para Assistir Novamente
+  if (replayBtn) {
+    replayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (replayOverlay) replayOverlay.classList.remove('show');
+      video.currentTime = 0;
+      video.muted = false;
+      video.volume = 1.0;
+      if (progressFill) progressFill.style.width = '0%';
+      video.play().catch(() => {});
+    });
+  }
 }
 
 
