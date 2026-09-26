@@ -313,10 +313,12 @@ function initHeroVideo() {
   const container = document.getElementById('heroVideoContainer');
   const soundToggle = document.getElementById('videoSoundToggle');
   const progressFill = document.getElementById('videoProgressFill');
+  const replayOverlay = document.getElementById('videoReplayOverlay');
+  const replayBtn = document.getElementById('videoReplayBtn');
 
   if (!video) return;
 
-  // Garante autoplay nativo sem restrições
+  // Garante autoplay nativo imediato sem restrições
   video.muted = true;
   video.play().catch(() => {});
 
@@ -329,10 +331,8 @@ function initHeroVideo() {
     }
   });
 
-  // Ativação de som SOMENTE quando o usuário toca ou clica (sem timers que quebrem o navegador)
-  const enableSound = () => {
-    video.muted = false;
-    video.volume = 1.0;
+  // Oculta o botão de som suavemente
+  const hideSoundButton = () => {
     if (soundToggle) {
       soundToggle.style.opacity = '0';
       setTimeout(() => {
@@ -340,6 +340,49 @@ function initHeroVideo() {
       }, 200);
     }
   };
+
+  // Ativação de som com garantia de NÃO pausar no PC
+  const enableSound = () => {
+    if (!video.muted && video.volume > 0) {
+      hideSoundButton();
+      return;
+    }
+
+    video.muted = false;
+    video.volume = 1.0;
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        hideSoundButton();
+      }).catch(() => {
+        // Se o navegador no PC rejeitar áudio desmutado sem clique prévio,
+        // NÃO deixa o vídeo pausar: volta pro mudo e continua rodando sem interrupção!
+        video.muted = true;
+        video.play().catch(() => {});
+        if (soundToggle) {
+          soundToggle.style.display = 'flex';
+          soundToggle.style.opacity = '1';
+        }
+      });
+    } else {
+      hideSoundButton();
+    }
+  };
+
+  // Se o navegador no PC tentar pausar o vídeo antes de acabar, força retomada imediata
+  video.addEventListener('pause', () => {
+    if (!video.ended) {
+      const p = video.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // Se for bloqueio de áudio sem gesto no PC, muta e continua rodando liso
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
+    }
+  });
 
   if (soundToggle) {
     soundToggle.addEventListener('click', (e) => {
@@ -356,13 +399,23 @@ function initHeroVideo() {
     });
   }
 
-  // Ativação automática no primeiro toque ou rolagem
-  ['touchstart', 'pointerdown', 'click', 'scroll'].forEach((evt) => {
-    window.addEventListener(evt, enableSound, { once: true, capture: true, passive: true });
-  });
+  // Detecção precisa de mobile para NÃO TOCAR na experiência mobile aprovada
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (window.matchMedia && window.matchMedia('(pointer: coarse) and (max-width: 1024px)').matches);
 
-  const replayOverlay = document.getElementById('videoReplayOverlay');
-  const replayBtn = document.getElementById('videoReplayBtn');
+  if (isMobile) {
+    // NO MOBILE (100% mantido como estava, funcionando perfeitamente):
+    ['touchstart', 'pointerdown', 'click', 'scroll'].forEach((evt) => {
+      window.addEventListener(evt, enableSound, { once: true, capture: true, passive: true });
+    });
+  } else {
+    // NO PC / DESKTOP:
+    // Não escuta 'scroll' do mouse para evitar que o Chrome pause o vídeo por falta de clique.
+    // Ativa no primeiro clique ou tecla de forma 100% permitida pelo navegador.
+    ['click', 'pointerdown', 'keydown'].forEach((evt) => {
+      window.addEventListener(evt, enableSound, { once: true, capture: true });
+    });
+  }
 
   // Ao finalizar o vídeo: para a reprodução e exibe a opção de Assistir Novamente
   video.addEventListener('ended', () => {
@@ -379,7 +432,13 @@ function initHeroVideo() {
       video.muted = false;
       video.volume = 1.0;
       if (progressFill) progressFill.style.width = '0%';
-      video.play().catch(() => {});
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      }
     });
   }
 }
