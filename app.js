@@ -310,20 +310,46 @@ function initFaqAccordion() {
    ========================================================================== */
 function initHeroVideo() {
   const video = document.getElementById('heroVideo');
+  const container = document.getElementById('heroVideoContainer');
   const progressFill = document.getElementById('videoProgressFill');
   const replayOverlay = document.getElementById('videoReplayOverlay');
   const replayBtn = document.getElementById('videoReplayBtn');
 
   if (!video) return;
 
-  // 1. Início imediato automático (100% contínuo, sem travas, sem pulos e sem reinício)
+  // 1. Início imediato no mudo (garante que comece rodando sozinho ao abrir a página)
   video.muted = true;
   video.play().catch(() => {});
   window.addEventListener('load', () => {
     video.play().catch(() => {});
   });
 
-  // 2. Curva Psicológica de Retenção (Avança rápido nos primeiros 10s e desacelera)
+  // 2. Ativa o som sozinho rapidamente (sem reiniciar o vídeo e sem dar bug)
+  const activateSound = () => {
+    video.muted = false;
+    video.volume = 1.0;
+  };
+
+  // Tenta desmutar sozinho rapidamente após a inicialização
+  setTimeout(activateSound, 300);
+
+  // E no primeiro toque, clique ou rolagem na tela, garante o áudio ligado de imediato
+  const quickSoundTrigger = () => {
+    activateSound();
+    ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
+      window.removeEventListener(evt, quickSoundTrigger, true);
+    });
+  };
+
+  ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(evt => {
+    window.addEventListener(evt, quickSoundTrigger, { once: true, capture: true });
+  });
+
+  if (container) {
+    container.addEventListener('click', quickSoundTrigger);
+  }
+
+  // 3. Curva Psicológica de Retenção (Avança rápido nos primeiros 10s e desacelera)
   video.addEventListener('timeupdate', () => {
     if (video.duration && progressFill) {
       const realRatio = Math.min(1, Math.max(0, video.currentTime / video.duration));
@@ -333,30 +359,33 @@ function initHeroVideo() {
     }
   });
 
-  // 3. Sem pausa: se houver tentativa de pausa, continua rodando direto
+  // 4. Sem pausa: se houver tentativa de pausa, continua rodando direto
   video.addEventListener('pause', () => {
     if (!video.ended) {
       video.play().catch(() => {});
     }
   });
 
-  // 4. Ao finalizar o vídeo: exibe botão de assistir novamente
+  // 5. Ao finalizar o vídeo: exibe botão de assistir novamente
   video.addEventListener('ended', () => {
     if (progressFill) progressFill.style.width = '100%';
     if (replayOverlay) replayOverlay.classList.add('show');
   });
 
-  // 5. Botão de Assistir Novamente
+  // 6. Botão de Assistir Novamente
   if (replayBtn) {
     replayBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (replayOverlay) replayOverlay.classList.remove('show');
       video.currentTime = 0;
+      video.muted = false;
+      video.volume = 1.0;
       if (progressFill) progressFill.style.width = '0%';
       video.play().catch(() => {});
     });
   }
 }
+
 
 
 
