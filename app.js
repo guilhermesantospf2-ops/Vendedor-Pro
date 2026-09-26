@@ -355,6 +355,11 @@ function initHeroVideo() {
       }
     });
   }
+
+  // Ativação automática de áudio no primeiro toque na tela, rolagem ou clique (sem o lead precisar caçar o botão)
+  ['touchstart', 'pointerdown', 'click', 'scroll'].forEach((evt) => {
+    window.addEventListener(evt, enableSound, { once: true, capture: true, passive: true });
+  });
 }
 
 
