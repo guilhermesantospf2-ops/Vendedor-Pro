@@ -306,11 +306,16 @@ function initFaqAccordion() {
 }
 
 /* ==========================================================================
-   8. HERO VSL VIDEO CONTROLLER (AUTOPLAY & SEAMLESS UNMUTE)
+   8. HERO VSL VIDEO CONTROLLER (CLEAN PLAYER: AUTOPLAY, PROGRESS & REPLAY)
    ========================================================================== */
 function initHeroVideo() {
   const video = document.getElementById('heroVideo');
+  const container = document.getElementById('heroVideoContainer');
   const unmuteBtn = document.getElementById('videoUnmuteBtn');
+  const progressFill = document.getElementById('videoProgressFill');
+  const replayOverlay = document.getElementById('videoReplayOverlay');
+  const replayBtn = document.getElementById('videoReplayBtn');
+
   if (!video) return;
 
   // Garante autoplay imediato iniciando mudo (política universal dos navegadores)
@@ -334,28 +339,65 @@ function initHeroVideo() {
 
   attemptPlay();
 
-  // Ativação de áudio fluida
-  if (unmuteBtn) {
-    unmuteBtn.addEventListener('click', (e) => {
+  // Atualização em tempo real da barrinha de progresso limpa
+  video.addEventListener('timeupdate', () => {
+    if (video.duration && progressFill) {
+      const percent = (video.currentTime / video.duration) * 100;
+      progressFill.style.width = `${percent}%`;
+    }
+  });
+
+  // Vídeo não pode ser pausado antes de finalizar
+  video.addEventListener('pause', () => {
+    if (!video.ended) {
+      video.play();
+    }
+  });
+
+  // Ao finalizar o vídeo: exibe a opção de assistir novamente
+  video.addEventListener('ended', () => {
+    if (progressFill) progressFill.style.width = '100%';
+    if (replayOverlay) replayOverlay.classList.add('show');
+  });
+
+  // Botão de Assistir Novamente
+  if (replayBtn) {
+    replayBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      video.muted = false;
-      video.volume = 1.0;
-      unmuteBtn.style.opacity = '0';
-      setTimeout(() => {
-        unmuteBtn.style.display = 'none';
-      }, 250);
+      if (replayOverlay) replayOverlay.classList.remove('show');
+      video.currentTime = 0;
+      if (progressFill) progressFill.style.width = '0%';
       video.play();
     });
+  }
 
-    // Se o usuário clicar nos controles nativos e tirar o mudo
-    video.addEventListener('volumechange', () => {
-      if (!video.muted && video.volume > 0) {
+  // Ativação de áudio fluida com 1 clique
+  const activateSound = () => {
+    if (video.muted) {
+      video.muted = false;
+      video.volume = 1.0;
+      if (unmuteBtn) {
         unmuteBtn.style.opacity = '0';
         setTimeout(() => {
           unmuteBtn.style.display = 'none';
         }, 250);
       }
+      video.play();
+    }
+  };
+
+  if (unmuteBtn) {
+    unmuteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      activateSound();
+    });
+  }
+
+  if (container) {
+    container.addEventListener('click', () => {
+      activateSound();
     });
   }
 }
+
 

@@ -443,6 +443,8 @@ h1, h2, h3, h4 {
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none; /* Impede clique para pausar ou menus nativos */
+  user-select: none;
 }
 
 .video-unmute-btn {
@@ -491,6 +493,77 @@ h1, h2, h3, h4 {
   0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 69, 0, 0.6); }
   70% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 0 10px rgba(255, 69, 0, 0); }
   100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 69, 0, 0); }
+}
+
+/* Barrinha de Progresso Limpa */
+.video-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.video-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--fire-cta) 0%, var(--fire-cta-end) 60%, var(--gold-bright) 100%);
+  box-shadow: 0 0 10px rgba(255, 69, 0, 0.9);
+  border-radius: 0 3px 3px 0;
+  transition: width 0.15s linear;
+}
+
+/* Overlay de Repetir Vídeo ao Finalizar */
+.video-replay-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 8, 12, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.video-replay-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.btn-video-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--fire-cta) 0%, var(--fire-cta-end) 100%);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 16px 32px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 30px var(--fire-glow), 0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pulse-fire 2.4s infinite;
+}
+
+.btn-video-replay:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(255, 69, 0, 0.75);
+}
+
+.btn-video-replay:active {
+  transform: scale(0.98);
 }
 
 .hero-middle-cta {
